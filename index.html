@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container-all">
+      <div class="container card">
+        <div class="content-right">
+          <!-- <h1>Break the limits here and now</h1> -->
+          <!-- audio and input ranger wraper -->
+          <div class="audio-container">
+            <!--   audio   -->
+            <audio id="myAudio" controls loop autoplay>
+              <source src="Audio.mp3" type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+            <!-- input ranger -->
+            <div class="slider-range-container">
+              <div class="slider-range-show-value">0 - 0</div>
+              <div class="slider-range-input-wrap">
+                <div class="slider-range-input"></div>
+              </div>
+            </div>
+          </div>
+
+          <!--  content acccodition    -->
+          <div class="accordion-container">
+            <button class="accordion">Decisions            </button>
+
+            <div class="panel">
+              <p>
+                <br>Courteney: Which of these vendors do you think we should go with?
+                <br>Dante: I’m really hesitant to make a decision until we’ve pondered the options a little longer. We don’t want to make any rash decisions.
+                <br>Courteney: We’ve sat on this for long enough, don’t you think? I know you’re of two minds about whether we should be switching vendors in the middle of the year, but I think it’s the right move. We had sound reasons for doing this, remember?
+                <br>Dante: Yes, yes, I know that it wasn’t a split-second decision, but whether it’ll really save us money is debatable.
+                <br>Courteney: I have to disagree with you there. We’ve both seen the reports and I don’t think there are any ifs, ands, or buts about it. We’re going to save money.
+                <br>Dante: Okay, I’m willing to make a tentative decision to go with GreatDeal Corp. as our new vendor, as long as that decision isn’t set in stone. We’ll revisit this decision in six months to see if they’re working out.
+                <br>Courteney: I can live with that. Now, can we discuss my raise?
+                <br>Dante: Raise? That’s definitely something I’ll need to ponder a lot more.
+                
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-left">
+          <div>
+            <div class="input-group">
+              <div>
+                <input
+                  type="text"
+                  class="input input-start"
+                  placeholder="Start"
+                />
+                <input type="text" class="input input-end" placeholder="End" />
+              </div>
+
+              <button class="btn button--submit" id="break-btn">Break</button>
+            </div>
+            <h2>Break case :</h2>
+            <ul id="break-container"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
