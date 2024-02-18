@@ -3,6 +3,19 @@ let startTime = 0;
 let endTime = 0;
 let breakCase;
 
+const audioData = {
+  start: 0,
+  end: 0,
+  duration: 0,
+  breakTimes: [],
+  element: document.getElementById("myAudio"),
+  audio: null,
+};
+
+const makeKey = () => {
+  return "audio-key" + Math.round(Math.random() * 99999999999999);
+};
+
 const getTimeString = (seconds) => {
   const m = parseInt(((seconds % (60 * 60)) / 60).toString());
   const s = parseInt((seconds % 60).toString());
@@ -48,8 +61,6 @@ $(function () {
   $(audioTag).on("loadedmetadata", function () {
     startTime = 0;
     endTime = Math.round(audioTag.duration);
-    console.log({ audioTag });
-    // appendBreakCase(0, endTime);
 
     document.querySelector(".slider-range-show-value").innerHTML =
       getTimeString(startTime) + " - " + getTimeString(endTime);
@@ -94,14 +105,12 @@ $(function () {
 // handle click break case
 const initHandleApplyBreak = () => {
   breakCase = document.getElementsByClassName("break-case");
-  console.log(breakCase);
   for (let index = 0; index < breakCase.length; index++) {
     const element = breakCase[index];
     const start = element.getAttribute("start");
     const end = element.getAttribute("end");
 
     element.addEventListener("click", (a, b) => {
-      console.log("hihi", start, end);
       startTime = Number(start);
       endTime = Number(end);
     });
@@ -112,13 +121,15 @@ const initHandleApplyBreak = () => {
 const handleRemoveBreakCase = (event) => {
   event.preventDefault();
   event.stopPropagation();
-  console.log($(event.target), event);
-  $(event.target).closest(".break-case").remove();
-  saveData()
+  const key = $(event.target).closest(".break-case").attr("key");
+
+  const newBreakTimes = audioData.breakTimes.filter((item) => item.key !== key);
+  console.log({ key, newBreakTimes });
+  audioData.breakTimes = newBreakTimes;
+  handleRenderBreakTimes(newBreakTimes, true);
 };
 const handleInitRemove = () => {
   const btnRemoves = document.querySelectorAll(".break-delete");
-  console.log("hihi", btnRemoves);
 
   for (let index = 0; index < btnRemoves.length; index++) {
     const element = btnRemoves[index];
@@ -128,11 +139,11 @@ const handleInitRemove = () => {
 };
 
 // function append break case
-const appendBreakCase = (start, end) => {
+const appendBreakCase = ({ start, end, key }) => {
   if (start > end) start = 0;
   const breakContainerElement = document.getElementById("break-container");
   $(breakContainerElement).append(`
-  <li class="break-case" start=${start} end=${end} >
+  <li class="break-case" start=${start} end=${end} key=${key} >
     ${start} --> ${end} 
 
     <button class="bin-button break-delete">
@@ -194,27 +205,7 @@ const getStartEnd = () => {
   return { start, end };
 };
 
-// handle add break case when click btn break
-$(function () {
-  const btnElement = document.getElementById("break-btn");
-  const breakContainerElement = document.getElementById("break-container");
-  btnElement.addEventListener("click", () => {
-    const { start, end } = getStartEnd();
-    console.log({ start, end });
-    appendBreakCase(Number(start), Number(end));
-    handleInitRemove();
-    initHandleApplyBreak();
-    saveData();
-  });
-});
-
-// init handle break case
-$(function () {
-  getData();
-  handleInitRemove();
-  initHandleApplyBreak();
-});
-
+//sort able
 $(function () {
   $("#break-container").sortable({
     revert: true,
@@ -222,18 +213,48 @@ $(function () {
 });
 
 // save data
-function saveData(params) {
-  const breakContainerElement = document.getElementById("break-container");
-  const html = breakContainerElement.outerHTML;
-  localStorage.setItem("html", JSON.stringify(html));
-  const htmlStore = localStorage.getItem("html");
-  console.log({ html, htmlStore });
+function saveData({ key, data }) {
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
-// save data
-function getData(params) {
-  const breakContainerElement = document.getElementById("break-container");
-  const htmlStore = localStorage.getItem("html");
-  if (!htmlStore) return;
-  breakContainerElement.outerHTML = JSON.parse(htmlStore);
+// get data
+function getData(key) {
+  const store = localStorage.getItem(key);
+  if (!store) return [];
+  return JSON.parse(store);
 }
+
+const handleRenderBreakTimes = (beakTimes, isSave = false) => {
+  const elementBreakContainer = document.getElementById("break-container");
+  elementBreakContainer.innerHTML = "";
+  for (let index = 0; index < beakTimes.length; index++) {
+    const element = beakTimes[index];
+    appendBreakCase({ ...element });
+  }
+  if (isSave) saveData({ key: "breaks", data: beakTimes });
+  handleInitRemove();
+  initHandleApplyBreak();
+};
+
+$(function () {
+  // init element audio when html loaded
+  audioData.element = document.getElementById("myAudio");
+  const btnAddBreakTime = document.getElementById("btn-add-break-time");
+
+  //init
+  (function () {
+    audioData.breakTimes = getData("breaks");
+    handleRenderBreakTimes(audioData.breakTimes);
+  })();
+
+  btnAddBreakTime.addEventListener("click", () => {
+    const { start, end } = getStartEnd();
+    audioData.breakTimes.push({
+      start,
+      end,
+      key: makeKey(),
+    });
+
+    handleRenderBreakTimes(audioData.breakTimes, true);
+  });
+});
