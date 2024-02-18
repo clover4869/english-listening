@@ -33,19 +33,11 @@ function handleTimeUpdate() {
 
 // handle play audio with loop
 function playAudioWithLoop(start, end) {
-  // audioTag.removeEventListener("timeupdate", handleTimeUpdate);
-  // audioTag.addEventListener("timeupdate", handleTimeUpdate);
-
   // Set the start time and play the audio
   audioTag.currentTime = start;
   audioTag.play();
 
   const functionControlTime = () => {
-    // console.log({
-    //   "audioTag.ended": audioTag.ended,
-    //   "audioTag.currentTime": audioTag.currentTime,
-    // });
-
     if (audioTag.currentTime >= endTime || audioTag.ended) {
       // Move the playback to the start time
       audioTag.currentTime = startTime;
@@ -124,7 +116,6 @@ const handleRemoveBreakCase = (event) => {
   const key = $(event.target).closest(".break-case").attr("key");
 
   const newBreakTimes = audioData.breakTimes.filter((item) => item.key !== key);
-  console.log({ key, newBreakTimes });
   audioData.breakTimes = newBreakTimes;
   handleRenderBreakTimes(newBreakTimes, true);
 };
@@ -209,6 +200,21 @@ const getStartEnd = () => {
 $(function () {
   $("#break-container").sortable({
     revert: true,
+    stop: function (event, ui) {
+      const breakCases = $(".break-case");
+      const result = [];
+      breakCases.each((index, node) => {
+
+        result.push({
+          start: node.getAttribute("start"),
+          end: node.getAttribute("end"),
+          key: node.getAttribute("key"),
+        });
+      });
+
+      audioData.breakTimes = result;
+      saveData({ key: "breaks", data: result });
+    },
   });
 });
 
