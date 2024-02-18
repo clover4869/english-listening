@@ -131,7 +131,6 @@ const handleInitRemove = () => {
 
 // function append break case
 const appendBreakCase = ({ start, end, key }) => {
-  if (start > end) start = 0;
   const breakContainerElement = document.getElementById("break-container");
   $(breakContainerElement).append(`
   <li class="break-case" start=${start} end=${end} key=${key} >
