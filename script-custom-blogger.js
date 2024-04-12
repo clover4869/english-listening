@@ -1,121 +1,79 @@
-function pagination(a) {
-  var e = "";
-  (leftnum = parseInt(numshowpage / 2)),
-    leftnum == numshowpage - leftnum && (numshowpage = 2 * leftnum + 1),
-    (start = postnumber - leftnum),
-    start < 1 && (start = 1),
-    (maximum = parseInt(a / postperpage) + 1),
-    maximum - 1 == a / postperpage && (maximum -= 1),
-    (end = start + numshowpage - 1),
-    end > maximum && (end = maximum),
-    (e +=
-      "<span class='totalpages'>Page " +
-      postnumber +
-      " of " +
-      maximum +
-      "</span>");
-  var s = parseInt(postnumber) - 1;
-  postnumber > 1 &&
-    (e +=
-      2 == postnumber
-        ? "page" == type
-          ? '<span class="showpage"><a href="' +
-            home_page +
-            '">' +
-            prevpage +
-            "</a></span>"
-          : '<span class="pagenumber"><a href="/search/label/' +
-            lblname1 +
-            "?&max-results=" +
-            postperpage +
-            '">' +
-            prevpage +
-            "</a></span>"
-        : "page" == type
-        ? '<span class="pagenumber"><a href="#" onclick="redirectpage(' +
-          s +
-          ');return false">' +
-          prevpage +
-          "</a></span>"
-        : '<span class="pagenumber"><a href="#" onclick="redirectlabel(' +
-          s +
-          ');return false">' +
-          prevpage +
-          "</a></span>"),
-    start > 1 &&
-      (e +=
-        "page" == type
-          ? '<span class="pagenumber"><a href="' +
-            home_page +
-            '">1</a></span>'
-          : '<span class="pagenumber"><a href="/search/label/' +
-            lblname1 +
-            "?&max-results=" +
-            postperpage +
-            '">1</a></span>'),
-    start > 2 && (e += "");
-  for (var r = start; r <= end; r++)
-    e +=
-      postnumber == r
-        ? '<span class="current">' + r + "</span>"
-        : 1 == r
-        ? "page" == type
-          ? '<span class="pagenumber"><a href="' +
-            home_page +
-            '">1</a></span>'
-          : '<span class="pagenumber"><a href="/search/label/' +
-            lblname1 +
-            "?&max-results=" +
-            postperpage +
-            '">1</a></span>'
-        : "page" == type
-        ? '<span class="pagenumber"><a href="#" onclick="redirectpage(' +
-          r +
-          ');return false">' +
-          r +
-          "</a></span>"
-        : '<span class="pagenumber"><a href="#" onclick="redirectlabel(' +
-          r +
-          ');return false">' +
-          r +
-          "</a></span>";
-  end < maximum - 1 && (e += ""),
-    end < maximum &&
-      (e +=
-        "page" == type
-          ? '<span class="pagenumber"><a href="#" onclick="redirectpage(' +
-            maximum +
-            ');return false">' +
-            maximum +
-            "</a></span>"
-          : '<span class="pagenumber"><a href="#" onclick="redirectlabel(' +
-            maximum +
-            ');return false">' +
-            maximum +
-            "</a></span>");
-  var n = parseInt(postnumber) + 1;
-  postnumber < maximum &&
-    (e +=
-      "page" == type
-        ? '<span class="pagenumber"><a href="#" onclick="redirectpage(' +
-          n +
-          ');return false">' +
-          nextpage +
-          "</a></span>"
-        : '<span class="pagenumber"><a href="#" onclick="redirectlabel(' +
-          n +
-          ');return false">' +
-          nextpage +
-          "</a></span>");
-  for (
-    var t = document.getElementsByName("pageArea"),
-      l = document.getElementById("blog-pager"),
-      p = 0;
-    p < t.length;
-    p++
-  )
-    t[p].innerHTML = e;
-  t && t.length > 0 && (e = ""), l && (l.innerHTML = e);
+function pagination(totalPosts) {
+  var paginationHtml = "";
+  var leftNumber = parseInt(numberOfPagesToShow / 2);
+  if (leftNumber == numberOfPagesToShow - leftNumber) {
+    numberOfPagesToShow = 2 * leftNumber + 1;
+  }
+  var startPage = currentPage - leftNumber;
+  if (startPage < 1) {
+    startPage = 1;
+  }
+  var totalPages = parseInt(totalPosts / postsPerPage) + 1;
+  if (totalPages - 1 == totalPosts / postsPerPage) {
+    totalPages -= 1;
+  }
+  var endPage = startPage + numberOfPagesToShow - 1;
+  if (endPage > totalPages) {
+    endPage = totalPages;
+  }
+  paginationHtml += "<span class='totalpages'>Page " + currentPage + " of " + totalPages + "</span>";
+  
+  var previousPage = parseInt(currentPage) - 1;
+  if (currentPage > 1) {
+    if (2 == currentPage) {
+      if ("page" == pageType) {
+        paginationHtml += '<span class="showpage"><a href="' + homePage + '">' + previousText + "</a></span>";
+      } else {
+        paginationHtml += '<span class="pagenumber"><a href="/search/label/' + labelName + "?&max-results=" + postsPerPage + '">' + previousText + "</a></span>";
+      }
+    } else {
+      if ("page" == pageType) {
+        paginationHtml += '<span class="pagenumber"><a href="#" onclick="redirectPage(' + previousPage + ');return false">' + previousText + "</a></span>";
+      } else {
+        paginationHtml += '<span class="pagenumber"><a href="#" onclick="redirectLabel(' + previousPage + ');return false">' + previousText + "</a></span>";
+      }
+    }
+  }
+  
+  if (startPage > 1) {
+    if ("page" == pageType) {
+      paginationHtml += '<span class="pagenumber"><a href="' + homePage + '">1</a></span>';
+    } else {
+      paginationHtml += '<span class="pagenumber"><a href="/search/label/' + labelName + "?&max-results=" + postsPerPage + '">1</a></span>';
+    }
+  }
+  
+  if (startPage > 2) {
+    paginationHtml += "";
+  }
+  
+  for (var page = startPage; page <= endPage; page++) {
+    paginationHtml += (currentPage == page) ? '<span class="current">' + page + "</span>" : (1 == page) ? (("page" == pageType) ? '<span class="pagenumber"><a href="' + homePage + '">1</a></span>' : '<span class="pagenumber"><a href="/search/label/' + labelName + "?&max-results=" + postsPerPage + '">1</a></span>') : (("page" == pageType) ? '<span class="pagenumber"><a href="#" onclick="redirectPage(' + page + ');return false">' + page + "</a></span>" : '<span class="pagenumber"><a href="#" onclick="redirectLabel(' + page + ');return false">' + page + "</a></span>");
+  }
+  
+  if (endPage < totalPages - 1) {
+    paginationHtml += "";
+  }
+  
+  if (endPage < totalPages) {
+    if ("page" == pageType) {
+      paginationHtml += '<span class="pagenumber"><a href="#" onclick="redirectPage(' + totalPages + ');return false">' + totalPages + "</a></span>";
+    } else {
+      paginationHtml += '<span class="pagenumber"><a href="#" onclick="redirectLabel(' + totalPages + ');return false">' + totalPages + "</a></span>";
+    }
+  }
+  
+  var pageAreas = document.getElementsByName("pageArea");
+  var blogPager = document.getElementById("blog-pager");
+  for (var p = 0; p < pageAreas.length; p++) {
+    pageAreas[p].innerHTML = paginationHtml;
+  }
+  if (pageAreas && pageAreas.length > 0) {
+    paginationHtml = "";
+  }
+  if (blogPager) {
+    blogPager.innerHTML = paginationHtml;
+  }
 }
 
 function paginationall(a) {
