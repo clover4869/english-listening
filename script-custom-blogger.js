@@ -112,7 +112,7 @@ function bloggerpage() {
               'feeds/posts/summary?max-results=1&alt=json-in-script&callback=paginationall"><' + '/' + 'script>'
           ))
         : ((type = "label"),
-          -1 == a.indexOf("&max-results=") && (postperpage = 20),
+          -1 == a.indexOf("&max-results=") && (postperpage1111 = 20),
           (postnumber =
             -1 != urlactivepage.indexOf("#PageNo=")
               ? urlactivepage.substring(
